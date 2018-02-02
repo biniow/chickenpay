@@ -67,9 +67,12 @@ class QrCodeList(generics.ListAPIView):
 
 
 class QrCodeDetail(generics.RetrieveAPIView):
-    permission_classes = (IsQrCodeOwner, )
-    queryset = QrCode.objects.all()
+    permission_classes = (IsAuthenticated, )
     serializer_class = QrCodeSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return QrCode.objects.filter(recipient=user)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -118,9 +121,14 @@ class WalletList(generics.ListCreateAPIView):
 
 
 class TransactionList(generics.ListCreateAPIView):
-    permission_classes = (IsAdminUser,)
-    queryset = Transaction.objects.all()
+    permission_classes = (IsAuthenticated,)
     serializer_class = Transaction
+
+    def get_queryset(self):
+        user = self.request.user
+        as_recipient = Transaction.objects.filter(recipient=user)
+        as_sender = Transaction.objects.filter(sender=user)
+        return as_recipient + as_sender
 
 
 class TransactionDetail(generics.RetrieveUpdateAPIView):
