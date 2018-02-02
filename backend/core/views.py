@@ -52,3 +52,6 @@ class TransactionDetail(generics.RetrieveUpdateAPIView):
 def main_view(request):
     return render(request, 'backend/core/main.html')
 
+def qrcode_view(request):
+    return render(request, 'backend/core/qrcode.html')
+
