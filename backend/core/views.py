@@ -4,10 +4,12 @@ from django.shortcuts import render
 from rest_framework import generics
 
 from core.models import User, QrCode, Wallet, Transaction
+from core.permissions import IsAdminUser
 from core.serializers import UserSerializer, QrCodeSerializer, WalletSerializer
 
 
 class UserList(generics.ListAPIView):
+    permission_classes = (IsAdminUser, )
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -46,4 +48,7 @@ class TransactionDetail(generics.RetrieveUpdateAPIView):
     queryset = Transaction.objects.all()
     serializer_class = Transaction
 
+
+def main_view(request):
+    return render(request, 'backend/core/main.html')
 
