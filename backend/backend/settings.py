@@ -41,8 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
-AUTH_USER_MODEL = 'core.User'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/main/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,5 +123,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
-TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
