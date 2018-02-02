@@ -84,12 +84,17 @@ class TransactionDetail(generics.RetrieveUpdateAPIView):
 def main_view(request):
     return render(request, 'backend/core/main.html')
 
+
 def qrcodecreate_view(request):
     return render(request, 'backend/core/qrcode.html')
 
 
 @login_required
 def transaction_view(request):
-    transactions = Transaction.objects.get(sender=request.user)
+    transactions = Transaction.objects.filter(sender=request.user)
     return render(request, 'backend/core/transaction.html', {'transactions': transactions})
+
+
+def registration_view(request):
+    return render(request, 'backend/core/registration.html')
 

@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^api/', include('core.urls')),
     url(r'^main/', views.main_view),
     url(r'^transactions/', views.transaction_view),
+    url(r'^registration/', views.registration_view),
 ]
