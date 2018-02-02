@@ -19,8 +19,8 @@ class QrCode(models.Model):
 
 
 class Wallet(models.Model):
-    user = models.ForeignKey(User, models.CASCADE)
-    balance = models.FloatField()
+    user = models.OneToOneField(User, models.CASCADE)
+    balance = models.FloatField(default=0.0)
 
 
 class Transaction(models.Model):
