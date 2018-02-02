@@ -11,12 +11,12 @@ class IsAdminUser(permissions.BasePermission):
         return request.user.is_superuser
 
 
-class IsUserOwner(permissions.BasePermission):
+class IsQrCodeOwner(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
-        return request.user.id == obj.id
+        return request.user == obj.recipient
 
 
 class IsWalletOwner(permissions.BasePermission):

@@ -9,21 +9,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.models import QrCode, Wallet, Transaction, UserProfile
-from core.permissions import IsAdminUser, IsUserOwner, IsWalletOwner
+from core.permissions import IsAdminUser, IsQrCodeOwner, IsWalletOwner
 from core.serializers import UserProfileSerializer, QrCodeSerializer, WalletSerializer, UserSerializer, \
     RegistrationSerializer, QrCodeGeneratorSerializer
 
 
 class UserList(generics.ListAPIView):
-    permission_classes = (IsAdminUser, )
-    queryset = User.objects.all()
+    permission_classes = (IsAuthenticated, )
     serializer_class = UserSerializer
 
-
-class UserDetail(generics.RetrieveUpdateAPIView):
-    permission_classes = (IsUserOwner,)
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    def get_queryset(self):
+        return [self.request.user]
 
 
 class UserCreate(generics.CreateAPIView):
@@ -38,6 +34,10 @@ class UserCreate(generics.CreateAPIView):
         user_profile = UserProfile(user=instance)
         user_profile.save()
 
+        wallet = Wallet(user=instance)
+        wallet.balance = 0.0
+        wallet.save()
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -49,25 +49,38 @@ class UserCreate(generics.CreateAPIView):
 
 
 class UserProfileList(generics.ListAPIView):
-    permission_classes = (IsAdminUser, )
+    permission_classes = (IsAuthenticated, )
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-
-class UserProfileDetail(generics.RetrieveUpdateAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    def get_queryset(self):
+        return UserProfile.objects.filter(user=self.request.user)
 
 
-class QrCodeList(generics.ListCreateAPIView):
-    permission_classes = (IsAdminUser,)
-    queryset = QrCode.objects.all()
+class QrCodeList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = QrCodeSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return QrCode.objects.filter(recipient=user)
 
 
 class QrCodeDetail(generics.RetrieveAPIView):
+    permission_classes = (IsQrCodeOwner, )
     queryset = QrCode.objects.all()
     serializer_class = QrCodeSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        user_id = request.user.id
+        amount = serializer.data['amount']
+        description = serializer.data['description']
+        code = '&$#'.join([str(user_id), str(amount), description])
+        response_json = serializer.data
+        response_json['code'] = code
+        return Response(response_json)
 
 
 class QrCodeCreate(generics.CreateAPIView):
@@ -96,15 +109,12 @@ class QrCodeCreate(generics.CreateAPIView):
 
 
 class WalletList(generics.ListCreateAPIView):
-    permission_classes = (IsAdminUser,)
-    queryset = Wallet.objects.all()
+    permission_classes = (IsAuthenticated, )
     serializer_class = WalletSerializer
 
-
-class WalletDetail(generics.RetrieveUpdateAPIView):
-    permission_classes = (IsWalletOwner, )
-    queryset = Wallet.objects.all()
-    serializer_class = WalletSerializer
+    def get_queryset(self):
+        user = self.request.user
+        return Wallet.objects.filter(user=user)
 
 
 class TransactionList(generics.ListCreateAPIView):
@@ -118,8 +128,10 @@ class TransactionDetail(generics.RetrieveUpdateAPIView):
     serializer_class = Transaction
 
 
+
 def main_view(request):
     return render(request, 'backend/core/main.html')
+
 
 def qrcodecreate_view(request):
     return render(request, 'backend/core/qrcode.html')
