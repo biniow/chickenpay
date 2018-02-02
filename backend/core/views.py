@@ -33,7 +33,7 @@ class UserCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save()
         user_id = serializer.data['id']
-        user_profile = UserProfile(user=)
+        # user_profile = UserProfile(user=)
         print(serializer)
 
 

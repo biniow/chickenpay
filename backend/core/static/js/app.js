@@ -21,11 +21,11 @@ function exportCode() {
 }
 
 function sendRegistrationData() {
-    var userName = $('#registration_username'),
-        firstname = $('#registration_firstname'),
-        lastname = $('#registration_lastname'),
-        email = $('#registration_email'),
-        password = $('#registration_password'),
+    var userName = $('#registration_username')[0].value,
+        firstname = $('#registration_firstname')[0].value,
+        lastname = $('#registration_lastname')[0].value,
+        email = $('#registration_email')[0].value,
+        password = $('#registration_password')[0].value,
         json = {
             username: userName,
             first_name: firstname,
@@ -33,11 +33,14 @@ function sendRegistrationData() {
             email: email,
             password: password
         };
-
     $.ajax
     ({
         type: "POST",
-        url: 'user/create',
+        url: 'http://127.0.0.1:8000/api/user/create/',
+        headers: {
+            "Access-Control-Allow-Origin":"*"
+        },
+        async: false,
         dataType: 'json',
         //json object to sent to the authentication url
         data: JSON.stringify(json),

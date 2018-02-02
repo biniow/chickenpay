@@ -3,32 +3,44 @@
 {% block title %}Registration{% endblock %}
 
 {% block content %}
-<h2>Registration</h2>
-<form>
-    <form>
-        <label for="registration_username">User name:</label>
-        <div class="form-group">
-            <input  id="registration_username">
-        </div>
-        <label for="registration_firstname">First name:</label>
-        <div class="form-group">
-            <input  id="registration_firstname">
-        </div>
-        <label for="registration_lastname">Last name:</label>
-        <div class="form-group">
-            <input  id="registration_lastname">
-        </div>
-        <label for="registration_email">Email:</label>
-        <div class="form-group">
-            <input type="email" id="registration_email">
-        </div>
-        <label for="registration_password">Password:</label>
-        <div class="form-group">
-            <input type="password" id="registration_password">
-        </div>
-        <div class="form-group">
-            <button type="button" class="btn btn-info" onclick="sendRegistrationData()">Registration</button>
-        </div>
-    </form>
-</form>
+<div class="panel panel-success" style="margin: auto;width: 60%;">
+    <div class="panel-heading">
+        <h2>Registration</h2>
+    </div>
+    <div class="panel-body">
+        <form>
+            <form>
+                <label for="registration_username">User name:</label>
+
+                <div class="form-group">
+                    <input id="registration_username">
+                </div>
+                <label for="registration_firstname">First name:</label>
+
+                <div class="form-group">
+                    <input id="registration_firstname">
+                </div>
+                <label for="registration_lastname">Last name:</label>
+
+                <div class="form-group">
+                    <input id="registration_lastname">
+                </div>
+                <label for="registration_email">Email:</label>
+
+                <div class="form-group">
+                    <input type="email" id="registration_email">
+                </div>
+                <label for="registration_password">Password:</label>
+
+                <div class="form-group">
+                    <input type="password" id="registration_password">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-info" onclick="sendRegistrationData()">Registration</button>
+                </div>
+            </form>
+        </form>
+    </div>
+</div>
+
 {% endblock %}
