@@ -4,3 +4,18 @@ function uuidv4() {
     return v.toString(16);
   });
 }
+
+function generateQRCode() {
+    var comment = $("#comment")[0].value,
+        price = $("#price")[0].value,
+        qrcodeDiv = $("#qrcodeTable");
+        qrcodeDiv.empty();
+        qrcodeDiv.qrcode({
+            render: "table",
+            text: comment + ";" + price
+        });
+}
+
+function exportCode() {
+
+}

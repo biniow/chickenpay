@@ -24,5 +24,5 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^api/', include('core.urls')),
     url(r'^main/', views.main_view),
-    url(r'^qrcode/', views.qrcode_view),
+    url(r'^transactions/', views.transaction_view),
 ]

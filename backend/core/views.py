@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 # Create your views here.
@@ -52,6 +53,12 @@ class TransactionDetail(generics.RetrieveUpdateAPIView):
 def main_view(request):
     return render(request, 'backend/core/main.html')
 
-def qrcode_view(request):
+def qrcodecreate_view(request):
     return render(request, 'backend/core/qrcode.html')
+
+
+@login_required
+def transaction_view(request):
+    transactions = Transaction.objects.get(sender=request.user)
+    return render(request, 'backend/core/transaction.html', {'transactions': transactions})
 
