@@ -31,12 +31,21 @@ class UserCreate(generics.CreateAPIView):
     serializer_class = RegistrationSerializer
 
     def perform_create(self, serializer):
-        serializer.save()
-        user_id = serializer.data['id']
-        user_profile = UserProfile(user=)
-        print(serializer)
+        instance = serializer.save()
+        instance.set_password(instance.password)
+        instance.save()
 
+        user_profile = UserProfile(user=instance)
+        user_profile.save()
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        response_json = serializer.data
+        response_json.pop('password')
+        headers = self.get_success_headers(response_json)
+        return Response(response_json, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class UserProfileList(generics.ListAPIView):
