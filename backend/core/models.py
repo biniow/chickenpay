@@ -18,6 +18,9 @@ class QrCode(models.Model):
     date = models.DateTimeField()
     description = models.TextField()
 
+    class Meta:
+        unique_together = ('recipient', 'amount', 'description', )
+
 
 class Wallet(models.Model):
     user = models.OneToOneField(User, models.CASCADE)

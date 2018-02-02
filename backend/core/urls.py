@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^user_profile/(?P<pk>[0-9]+)/$', views.UserProfileDetail.as_view()),
     url(r'^qr/$', views.QrCodeList.as_view()),
     url(r'^qr/(?P<pk>[0-9]+)/$', views.QrCodeDetail.as_view()),
+    url(r'^qr/create/$', views.QrCodeCreate.as_view()),
     url(r'^wallet/$', views.WalletList.as_view()),
     url(r'^wallet/(?P<pk>[0-9]+)/$', views.WalletDetail.as_view()),
     url(r'^transaction/$', views.TransactionList.as_view()),

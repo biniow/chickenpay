@@ -1,15 +1,17 @@
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.models import QrCode, Wallet, Transaction, UserProfile
-from core.permissions import IsAdminUser, IsUserOwner
+from core.permissions import IsAdminUser, IsUserOwner, IsWalletOwner
 from core.serializers import UserProfileSerializer, QrCodeSerializer, WalletSerializer, UserSerializer, \
-    RegistrationSerializer
+    RegistrationSerializer, QrCodeGeneratorSerializer
 
 
 class UserList(generics.ListAPIView):
@@ -28,16 +30,13 @@ class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
 
-    def create(self, request, *args, **kwargs):
-        try:
-            user = User(request.data)
-            user.save()
+    def perform_create(self, serializer):
+        serializer.save()
+        user_id = serializer.data['id']
+        user_profile = UserProfile(user=)
+        print(serializer)
 
-            user_profile = UserProfile(user=user)
-            user_profile.save()
-            Response(status=status.HTTP_201_CREATED)
-        except Exception as e:
-            Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UserProfileList(generics.ListAPIView):
@@ -52,6 +51,7 @@ class UserProfileDetail(generics.RetrieveUpdateAPIView):
 
 
 class QrCodeList(generics.ListCreateAPIView):
+    permission_classes = (IsAdminUser,)
     queryset = QrCode.objects.all()
     serializer_class = QrCodeSerializer
 
@@ -61,17 +61,45 @@ class QrCodeDetail(generics.RetrieveAPIView):
     serializer_class = QrCodeSerializer
 
 
+class QrCodeCreate(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated, )
+    queryset = QrCode.objects.all()
+    serializer_class = QrCodeGeneratorSerializer
+
+    def perform_create(self, serializer):
+        date = datetime.now()
+        recipient = self.request.user
+        serializer.save(date=date, recipient=recipient)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        user_id = request.user.id
+        amount = serializer.data['amount']
+        description = serializer.data['description']
+        code = '&$#'.join([str(user_id), str(amount), description])
+        response_json = {
+            'code': code
+        }
+        headers = self.get_success_headers(response_json)
+        return Response(response_json, status=status.HTTP_201_CREATED, headers=headers)
+
+
 class WalletList(generics.ListCreateAPIView):
+    permission_classes = (IsAdminUser,)
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
 
 
 class WalletDetail(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsWalletOwner, )
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
 
 
 class TransactionList(generics.ListCreateAPIView):
+    permission_classes = (IsAdminUser,)
     queryset = Transaction.objects.all()
     serializer_class = Transaction
 
