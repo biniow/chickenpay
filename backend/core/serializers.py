@@ -31,7 +31,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class QrCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = QrCode
-        fields = ('id', 'recipient', 'amount', 'date', 'description')
+        fields = ('id', 'recipient', 'amount', 'description')
+
+
+class QrCodeGeneratorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QrCode
+        fields = ('id', 'amount', 'description')
 
 
 class WalletSerializer(serializers.ModelSerializer):
