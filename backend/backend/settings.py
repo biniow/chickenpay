@@ -40,7 +40,14 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+   ),
+}
 
 LOGIN_REDIRECT_URL = '/main/'
 
