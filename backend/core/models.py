@@ -31,5 +31,4 @@ class Transaction(models.Model):
     sender = models.ForeignKey(User, models.CASCADE, related_name='sender')
     recipient = models.ForeignKey(User, models.CASCADE, related_name='recipient')
     amount = models.FloatField()
-    completed = models.BooleanField()
     date = models.DateTimeField()
