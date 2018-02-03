@@ -15,7 +15,7 @@
                 <div class="col-md-6">
                     <div class="panel panel-success">
                         <div class="panel-heading">
-                            <h3>Hello {{ request.user }}</h3>
+                            <h3>Hello {{ request.user }}, <a href="/logout/">Logout</a></h3>
                         </div>
                         <div class="panel-body">
                             <b>Current Balance:</b> {{ wallet.balance }} PLN
@@ -24,9 +24,9 @@
                             {% for code in codes %}
                                 <div class="qr-code">
                                     <b>Goal:</b> {{ code.description }}
-                                    <br />
+                                    <br/>
                                     <b>Amount:</b> {{ code.amount }} PLN
-                                    <br />
+                                    <br/>
                                     <img id='barcode'
                                          src="https://api.qrserver.com/v1/create-qr-code/?data={{ code.recipient.id }}%26%24%23{{ code.amount }}%26%24%23{{ code.description }}&amp;size=300x300"
                                          alt=""
@@ -34,7 +34,7 @@
                                          width="300"
                                          height="300"
                                          style="text-align:center"/>
-                                    <br />
+                                    <br/>
                                 </div>
                                 <br/>
                                 <hr>
@@ -51,7 +51,6 @@
                             <table class="table">
                                 <thead class="thead-light">
                                 <tr>
-                                    <th scope="col">#</th>
                                     <th scope="col">Sender</th>
                                     <th scope="col">Recipient</th>
                                     <th scope="col">Amount</th>
@@ -59,10 +58,13 @@
                                 </tr>
                                 {% for transaction in transactions %}
                                     <tr>
-                                        <th scope="col">{{ transaction.id }}</th>
                                         <th scope="col">{{ transaction.sender.username }}</th>
                                         <th scope="col">{{ transaction.recipient.username }}</th>
-                                        <th scope="col">{{ transaction.amount }} PLN</th>
+                                        {% if transaction.sender == request.user %}
+                                            <th scope="col" style="color:red">- {{ transaction.amount }} PLN</th>
+                                        {% else %}
+                                            <th scope="col" style="color:green">{{ transaction.amount }} PLN</th>
+                                        {% endif %}
                                         <th scope="col">{{ transaction.date }}</th>
                                     </tr>
                                 {% endfor %}

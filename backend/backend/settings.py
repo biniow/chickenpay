@@ -25,7 +25,7 @@ SECRET_KEY = '(2bggg=gxc^b!ch(4g+z+9brlnt&4g#9arghruq&hulrct#r@9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '10.10.154.193', 'shrouded-taiga-72175.herokuapp.com']
 
 
 # Application definition
