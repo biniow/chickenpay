@@ -148,7 +148,7 @@ class TransactionCreate(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         amount = serializer.data['amount']
-        sender = self.request.user
+        sender = User.objects.get(id=2)#self.request.user
         sender_wallet = Wallet.objects.get(user=sender)
 
         recipient = User.objects.get(id=serializer.data['recipient'])
