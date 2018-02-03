@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Main{% endblock %}
+
+{% block content %}
+
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <!--<img src="http://localhost:8000/static/logo.png" alt="ChickenPay" style="height: 75px">-->
+            <h1>ChickenPay</h1>
+            <!--<img src="http://localhost:8000/static/logo.png" alt="ChickenPay" style="height: 75px">-->
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h3>Hello {{ request.user }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <b>Current Balance:</b> {{ wallet.balance }} PLN
+                            <hr>
+                            <b>Your existing codes:</b>
+                            {% for code in codes %}
+                                <div class="qr-code">
+                                    <b>Goal:</b> {{ code.description }}
+                                    <br />
+                                    <b>Amount:</b> {{ code.amount }} PLN
+                                    <br />
+                                    <img id='barcode'
+                                         src="https://api.qrserver.com/v1/create-qr-code/?data={{ code.recipient.id }}%26%24%23{{ code.amount }}%26%24%23{{ code.description }}&amp;size=300x300"
+                                         alt=""
+                                         title="{{ code.description }}"
+                                         width="300"
+                                         height="300"
+                                         style="text-align:center"/>
+                                    <br />
+                                </div>
+                                <br/>
+                                <hr>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            Previous transactions:
+                        </div>
+                        <div class="panel-body">
+                            <table class="table">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Sender</th>
+                                    <th scope="col">Recipient</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Date</th>
+                                </tr>
+                                {% for transaction in transactions %}
+                                    <tr>
+                                        <th scope="col">{{ transaction.id }}</th>
+                                        <th scope="col">{{ transaction.sender.username }}</th>
+                                        <th scope="col">{{ transaction.recipient.username }}</th>
+                                        <th scope="col">{{ transaction.amount }} PLN</th>
+                                        <th scope="col">{{ transaction.date }}</th>
+                                    </tr>
+                                {% endfor %}
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

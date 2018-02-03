@@ -18,17 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 
-from core import views
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api-token-auth/', obtain_auth_token),
-    url(r'^api/', include('core.urls')),
-    url(r'^main/', views.main_view),
-    url(r'^transactions/', views.transaction_view),
-    url(r'^qrcodecreate/', views.qrcodecreate_view),
-    url(r'^registration/', views.registration_view),
-    url(r'^qrcode/(?P<pk>[0-9]+)/', views.qrcode_details_view),
-    url(r'^qrcodeList/', views.qrcodelist_view),
+    url(r'^api/', include('core.rest_urls')),
+    url(r'', include('core.urls')),
 
 ]
