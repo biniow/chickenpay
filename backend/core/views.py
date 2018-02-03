@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.contrib.auth.models import User
@@ -11,7 +13,7 @@ from rest_framework.response import Response
 from core.models import QrCode, Wallet, Transaction, UserProfile
 from core.permissions import IsAdminUser, IsQrCodeOwner, IsWalletOwner
 from core.serializers import UserProfileSerializer, QrCodeSerializer, WalletSerializer, UserSerializer, \
-    RegistrationSerializer, QrCodeGeneratorSerializer
+    RegistrationSerializer, QrCodeGeneratorSerializer, TransactionSerializer, TransactionCreateSerializer
 
 
 class UserList(generics.ListAPIView):
@@ -120,21 +122,53 @@ class WalletList(generics.ListCreateAPIView):
         return Wallet.objects.filter(user=user)
 
 
-class TransactionList(generics.ListCreateAPIView):
+class TransactionList(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = Transaction
+    serializer_class = TransactionSerializer
 
     def get_queryset(self):
         user = self.request.user
         as_recipient = Transaction.objects.filter(recipient=user)
         as_sender = Transaction.objects.filter(sender=user)
-        return as_recipient + as_sender
+        return as_recipient | as_sender
 
 
-class TransactionDetail(generics.RetrieveUpdateAPIView):
-    queryset = Transaction.objects.all()
-    serializer_class = Transaction
+class TransactionCreate(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated, )
+    queryset = QrCode.objects.all()
+    serializer_class = TransactionCreateSerializer
 
+    def perform_create(self, serializer):
+        sender = self.request.user
+        date = datetime.now()
+        serializer.save(date=date, sender=sender)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        amount = serializer.data['amount']
+        sender = self.request.user
+        sender_wallet = Wallet.objects.get(user=sender)
+
+        recipient = User.objects.get(id=serializer.data['recipient'])
+        recipient_wallet = Wallet.objects.get(user=recipient)
+
+        if sender_wallet.balance < amount:
+            response_json = {'response': 'Not enough money to make transaction'}
+            headers = self.get_success_headers(response_json)
+            return Response(response_json, status=status.HTTP_403_FORBIDDEN, headers=headers)
+        else:
+            sender_wallet.balance -= amount
+            sender_wallet.save()
+
+            recipient_wallet.balance += amount
+            recipient_wallet.save()
+
+            response_json = {'response': 'OK'}
+
+            headers = self.get_success_headers(response_json)
+            return Response(response_json, status=status.HTTP_201_CREATED, headers=headers)
 
 
 def main_view(request):
