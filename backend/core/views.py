@@ -142,7 +142,7 @@ def main_view(request):
 
 
 def qrcodecreate_view(request):
-    return render(request, 'backend/core/qrcode.html')
+    return render(request, 'backend/core/qrcodeCreate.html')
 
 
 @login_required
@@ -153,4 +153,15 @@ def transaction_view(request):
 
 def registration_view(request):
     return render(request, 'backend/core/registration.html')
+
+
+def qrcode_details_view(request, pk):
+    qrcode = QrCode.objects.get(id=pk)
+    code = '&$#'.join([str(request.user.id), str(qrcode.amount), qrcode.description])
+    return render(request, 'backend/core/qrcodeDetails.html', {'qrcode': qrcode, 'code': code})
+
+
+def qrcodelist_view(request):
+    qrcodes = QrCode.objects.filter(recipient=request.user)
+    return render(request, 'backend/core/qrcodeList.html', {'qrcodes': qrcodes})
 

@@ -25,5 +25,9 @@ urlpatterns = [
     url(r'^api/', include('core.urls')),
     url(r'^main/', views.main_view),
     url(r'^transactions/', views.transaction_view),
+    url(r'^qrcodecreate/', views.qrcodecreate_view),
     url(r'^registration/', views.registration_view),
+    url(r'^qrcode/(?P<pk>[0-9]+)/', views.qrcode_details_view),
+    url(r'^qrcodeList/', views.qrcodelist_view),
+
 ]

@@ -5,27 +5,27 @@
 {% block content %}
 <div class="panel panel-success">
     <div class="panel-heading">
-        <h2 style="text-align:center;">Transations</h2>
+        <h2 style="text-align:center;">Yours QR Codes</h2>
     </div>
     <div class="panel-body">
         <table class="table">
             <thead class="thead-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Sender</th>
-                <th scope="col">Recipient</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Date</th>
+                <th scope="col">Description</th>
+                <th scope="col">Details</th>
             </tr>
             </thead>
             <tbody>
-{% for transaction in transactions %}
+{% for qrcode in qrcodes %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ transaction.sender }}</td>
-                <td>{{ transaction.recipient }}</td>
-                <td>{{ transaction.amount }}</td>
-                <td>{{ transaction.date }}</td>
+                <td>{{ qrcode.amount }}</td>
+                <td>{{ qrcode.date }}</td>
+                <td>{{ qrcode.description }}</td>
+                <td><a href="http://localhost:8000/qrcode/{{qrcode.id}}/"><span class="glyphicon glyphicon-arrow-right" ></span></a></td>
             </tr>
 {% endfor %}
             </tbody>

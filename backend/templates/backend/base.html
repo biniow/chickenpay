@@ -26,16 +26,19 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+
 <div id="content">
+    {% if user.is_authenticated %}
     <div class="navbar navbar-inverse navbar-fixed-left">
-        <a class="navbar-brand" href="#">Brand</a>
+        <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-usd"></span></a>
         <ul class="nav navbar-nav">
             <li><a href="/main/">Main Page</a></li>
-            <li><a href="/qrcode/">Generate QR Code</a></li>
-            <li><a href="/qrcode">Link4</a>See your QR Codes</li>
-            <li><a href="#">Link5</a></li>
+            <li><a href="/qrcodecreate/">Generate QR-Code</a></li>
+            <li><a href="/qrcodeList/">QR-Core List</a></li>
+            <li><a href="/transactions/">Transactions</a></li>
         </ul>
     </div>
+    {% endif %}
     <div class="container">
         <div class="row">
             {% block content %}
@@ -44,6 +47,7 @@
     </div>
 
 </div>
+
 <style>
     .navbar-fixed-left {
         width: 140px;
